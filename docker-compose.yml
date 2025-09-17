@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+    # Access your page at:
+    # http://localhost:8080/submission/views/home.html
