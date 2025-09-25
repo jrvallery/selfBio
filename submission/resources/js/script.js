@@ -1,13 +1,29 @@
-const modality   = document.getElementById('event_modality');
-const attendees  = document.getElementById('attendees_group');
+const modality = document.getElementById('event_modality');
+const attendees = document.getElementById('attendees_group');
 const locationGroup = document.getElementById('location_group');
-const urlGroup   = document.getElementById('remote_url_group');
-const eventName  = document.getElementById('event_name');
-const weekday    = document.getElementById('event_weekday');
-const time       = document.getElementById('event_time');
-const category   = document.getElementById('event_category');
+const urlGroup = document.getElementById('remote_url_group');
+const eventName = document.getElementById('event_name');
+const weekday = document.getElementById('event_weekday');
+const time = document.getElementById('event_time');
+const category = document.getElementById('event_category');
+const locationInput = document.getElementById('event_location');
+const remoteUrlInput = document.getElementById('event_remote_url');
+const attendeesInput = document.getElementById('event_attendees');
+
+const eventModal = document.getElementById('eventModal');
+
+let currentCard = null;
+
 function show(el) { el.classList.remove('d-none'); }
 function hide(el) { el.classList.add('d-none'); }
+
+function getModalInstance() {
+    if (!eventModal) {
+        return null;
+    }
+
+    return bootstrap.Modal.getOrCreateInstance(eventModal);
+}
 
 function updateLocationOptions() {
     if (modality.value === 'in-person') {
@@ -35,18 +51,113 @@ function saveEvent(){
         name: eventName.value,
         weekday: weekday.value,
         time: time.value,
+        category: category.value,
         modality: modality.value,
-        location: modality.value === 'in-person' ? document.getElementById('event_location').value : null,
-        url: modality.value === 'remote' ? document.getElementById('event_remote_url').value : null,
-        attendees: document.getElementById('event_attendees').value
+        location: modality.value === 'in-person' ? locationInput.value : null,
+        url: modality.value === 'remote' ? remoteUrlInput.value : null,
+        attendees: attendeesInput.value
     };
-    console.log('Event Details:', eventDetails);
-    addEventToCalendarUI(eventDetails);
-    closeEventModal();
+    if (currentCard) {
+        console.log('Editing existing event:', eventDetails);
+        editEventCard(currentCard, eventDetails);
+    }
+    else {
+        console.log('Event Details:', eventDetails);
+        addEventToCalendarUI(eventDetails);
+    }
+    const modalInstance = getModalInstance();
+    if (modalInstance) {
+        modalInstance.hide();
+    }
+}
+
+function editEventCard(card, eventDetails) {
+    if (!card) {
+        console.error('No card selected for editing.');
+        return;
+    }
+    const updatedCard = createEventCard(eventDetails);
+    const newDayColumn = document.getElementById(eventDetails.weekday.toLowerCase());
+    if (!newDayColumn) {
+        console.error('Invalid weekday when editing event:', eventDetails.weekday);
+        currentEditingCard = null;
+        return;
+    }
+    const currentParent = card.parentElement;
+    if (currentParent && currentParent === newDayColumn) {
+        currentParent.replaceChild(updatedCard, card);
+    } else {
+        if (currentParent) {
+            currentParent.removeChild(card);
+        }
+        newDayColumn.appendChild(updatedCard);
+    }
+    
+    currentEditingCard = null;
+    console.log('Editing event:', eventDetails);
+}
+
+
+function openEditModal(card, eventDetails) {
+    if (!card || !eventDetails) {
+        console.error('Card or event details missing for editing.');
+        return;
+    }
+    eventName.value = eventDetails.name || '';
+    weekday.value = eventDetails.weekday || '';
+    time.value = eventDetails.time || '';
+    modality.value = eventDetails.modality || '';
+    category.value = eventDetails.category || '';
+    
+    currentCard = card;
+
+    updateLocationOptions();
+    if (modality.value === 'in-person') {
+        locationInput.value = eventDetails.location || '';
+        remoteUrlInput.value = '';
+    } else if (modality.value === 'remote') {
+        remoteUrlInput.value = eventDetails.url || '';
+        locationInput.value = '';
+    } else {
+        locationInput.value = '';
+        remoteUrlInput.value = '';
+    }
+    attendeesInput.value = eventDetails.attendees || '';
+    
+    const modalInstance = getModalInstance();
+    if (modalInstance) {
+        modalInstance.show();
+    }
+}
+
+function getCategoryColor(){
+    const selectedCategory = category.value;
+    switch(selectedCategory) {
+        case 'work': return 'lightyellow';
+        case 'personal': return 'lightblue';
+        case 'school': return 'lightgreen';
+    }
+}
+
+function resetEventForm() {
+    eventName.value = '';
+    weekday.value = '';
+    time.value = '';
+    category.value = '';
+    modality.value = '';
+    
+    attendeesInput.value = '';
+    locationInput.value = '';
+    remoteUrlInput.value = '';
+    
+    updateLocationOptions();
+}
+
+if (eventModal) {
+    eventModal.addEventListener('hidden.bs.modal', resetEventForm);
 }
 
 function addEventToCalendarUI(eventInfo) {
-    // Placeholder function to simulate adding event to calendar
     const dayId = eventInfo.weekday.toLowerCase();
     const dayColumn = document.getElementById(dayId);
     if(!dayColumn) {
@@ -113,43 +224,4 @@ function createEventCard(eventDetails) {
     card.addEventListener('click', () => openEditModal(card, eventDetails));
 
     return card;
-}
-
-function openEditModal(card, eventDetails) {
-    const modal = new bootstrap.Modal(document.getElementById('eventModal'));
-
-    document.getElementById('event_name').value = eventDetails.name || '';
-    document.getElementById('event_weekday').value = eventDetails.weekday || '';
-    document.getElementById('event_time').value = eventDetails.time || '';
-    document.getElementById('event_modality').value = eventDetails.modality || '';
-
-    updateLocationOptions();
-    if (eventDetails.modality === 'in-person') {
-        document.getElementById('event_location').value = eventDetails.location || '';
-    } else if (eventDetails.modality === 'remote') {
-        document.getElementById('event_remote_url').value = eventDetails.url || '';
-    }
-    document.getElementById('event_attendees').value = eventDetails.attendees || '';
-    document.getElementById('event_category').value = eventDetails.category || '';
-    
-    eventModal.show();
-}
-
-function getCategoryColor(){
-    const selectedCategory = category.value;
-    switch(selectedCategory) {
-        case 'work': return 'lightyellow';
-        case 'personal': return 'lightblue';
-        case 'school': return 'lightgreen';
-    }
-}
-function closeEventModal() {
-    const eventModal = document.getElementById('eventModal');
-    const modal = bootstrap.Modal.getInstance(eventModal);
-    function resetForm() {
-        document.getElementById('event_form').reset();
-        updateLocationOptions();
-    }
-    modal.hide();
-    resetForm();
 }
