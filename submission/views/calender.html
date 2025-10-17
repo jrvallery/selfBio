@@ -54,70 +54,71 @@
             <h5 class="modal-title">Create Event</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-      
-            <div class="mb-3">
-              <label for="event_name" class="form-label">Event Name</label>
-              <input type="text" class="form-control" id="event_name" required>
-            </div>
+          <form id="event_form">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="event_name" class="form-label">Event Name</label>
+                <input type="text" class="form-control" id="event_name" required>
+              </div>
 
-            <div class="mb-3">
-              <label for="event_weekday" class="form-label">Day of Week</label>
-              <select class="form-select" id="event_weekday" required>
-                <option value="" selected disabled>Select a day</option>
-                <option value="Sunday">Sunday</option>
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-              </select>
-            </div>
+              <div class="mb-3">
+                <label for="event_weekday" class="form-label">Day of Week</label>
+                <select class="form-select" id="event_weekday" required>
+                  <option value="" selected disabled>Select a day</option>
+                  <option value="Sunday">Sunday</option>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                </select>
+              </div>
 
-            <div class="mb-3">
-              <label for="event_time" class="form-label">Time</label>
-              <input type="time" class="form-control" id="event_time" required>
-            </div>
-            
-            <div class="mb-3">
-              <label for="event_category" class="form-label">Category</label>
-              <select class="form-select" id="event_category" required>
-                <option value="" selected disabled>Select a Category</option>
-                <option value="school">School</option>
-                <option value="work">Work</option>
-                <option value="personal">Personal</option>
-              </select>
-            </div>
+              <div class="mb-3">
+                <label for="event_time" class="form-label">Time</label>
+                <input type="time" class="form-control" id="event_time" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="event_category" class="form-label">Category</label>
+                <select class="form-select" id="event_category" required>
+                  <option value="" selected disabled>Select a Category</option>
+                  <option value="school">School</option>
+                  <option value="work">Work</option>
+                  <option value="personal">Personal</option>
+                </select>
+              </div>
 
-            <div class="mb-3">
-              <label for="event_modality" class="form-label">Event Modality</label>
-              <select class="form-select" id="event_modality" onchange="updateLocationOptions(this.value)" required>
-                <option value="" selected disabled>Select modality</option>
-                <option value="in-person">In-Person</option>
-                <option value="remote">Remote</option>
-              </select>
-            </div>
+              <div class="mb-3">
+                <label for="event_modality" class="form-label">Event Modality</label>
+                <select class="form-select" id="event_modality" required>
+                  <option value="" selected disabled>Select modality</option>
+                  <option value="in-person">In-Person</option>
+                  <option value="remote">Remote</option>
+                </select>
+              </div>
 
-            <div class="mb-3 d-none" id="location_group">
-              <label for="event_location" class="form-label">Location</label>
-              <input type="text" class="form-control" id="event_location" placeholder="e.g., Room 210, Engineering Center">
-            </div>
+              <div class="mb-3 d-none" id="location_group">
+                <label for="event_location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="event_location" placeholder="e.g., Room 210, Engineering Center">
+              </div>
 
-            <div class="mb-3 d-none" id="remote_url_group">
-              <label for="event_remote_url" class="form-label">Remote URL</label>
-              <input type="url" class="form-control" id="event_remote_url" placeholder="Meeting link (Zoom, Teams, Google Meet, etc.)" pattern="^[A-Z].+">
-            </div>
+              <div class="mb-3 d-none" id="remote_url_group">
+                <label for="event_remote_url" class="form-label">Remote URL</label>
+                <input type="url" class="form-control" id="event_remote_url" placeholder="Meeting link (Zoom, Teams, Google Meet, etc.)" pattern="https?://.+">
+              </div>
 
-            <div class="mb-3 d-none" id="attendees_group">
-              <label for="event_attendees" class="form-label">Attendees</label>
-              <input type="text" class="form-control" id="event_attendees" placeholder="Names separated by commas, e.g: Alice, Bob, Charlie">
+              <div class="mb-3 d-none" id="attendees_group">
+                <label for="event_attendees" class="form-label">Attendees</label>
+                <input type="text" class="form-control" id="event_attendees" placeholder="Names separated by commas, e.g: Alice, Bob, Charlie">
+              </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="saveEvent()">Save Event</button>
-          </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save Event</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -125,6 +126,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <!-- Minimal behavior for modality-based field visibility -->
-    <script src="../resources/js/script.js"></script>
+    <script src="./resources/js/script.js"></script>
   </body>
 </html>

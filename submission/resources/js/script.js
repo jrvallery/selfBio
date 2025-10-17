@@ -9,6 +9,7 @@ const category = document.getElementById('event_category');
 const locationInput = document.getElementById('event_location');
 const remoteUrlInput = document.getElementById('event_remote_url');
 const attendeesInput = document.getElementById('event_attendees');
+const eventForm = document.getElementById('event_form');
 
 const eventModal = document.getElementById('eventModal');
 
@@ -26,36 +27,116 @@ function getModalInstance() {
 }
 
 function updateLocationOptions() {
-    if (modality.value === 'in-person') {
+    const modalityValue = modality.value;
+
+    if (modalityValue === 'in-person') {
         console.log('In-person selected');
         show(locationGroup);
         hide(urlGroup);
         show(attendees);
+        locationInput.required = true;
+        locationInput.setCustomValidity('');
+        remoteUrlInput.required = false;
+        remoteUrlInput.value = '';
+        remoteUrlInput.setCustomValidity('');
 
-    } else if (modality.value === 'remote') {
+    } else if (modalityValue === 'remote') {
         console.log('Remote selected');
         show(urlGroup);
         hide(locationGroup);
         show(attendees);
-
+        remoteUrlInput.required = true;
+        remoteUrlInput.setCustomValidity('');
+        locationInput.required = false;
+        locationInput.value = '';
+        locationInput.setCustomValidity('');
     } else {
         console.log('No modality selected');
         hide(locationGroup);
         hide(urlGroup);
         hide(attendees);
+        locationInput.required = false;
+        remoteUrlInput.required = false;
+        locationInput.value = '';
+        remoteUrlInput.value = '';
+        locationInput.setCustomValidity('');
+        remoteUrlInput.setCustomValidity('');
     }
+}
+
+function validateEventForm() {
+    if (!eventForm) {
+        return true;
+    }
+
+    const trimmedName = eventName.value.trim();
+    if (!trimmedName) {
+        eventName.setCustomValidity('Please enter an event name.');
+    } else {
+        eventName.setCustomValidity('');
+    }
+
+    if (!weekday.value) {
+        weekday.setCustomValidity('Select a day for the event.');
+    } else {
+        weekday.setCustomValidity('');
+    }
+
+    if (!time.value) {
+        time.setCustomValidity('Select a time for the event.');
+    } else {
+        time.setCustomValidity('');
+    }
+
+    if (!category.value) {
+        category.setCustomValidity('Select a category for the event.');
+    } else {
+        category.setCustomValidity('');
+    }
+
+    if (!modality.value) {
+        modality.setCustomValidity('Select how you will attend the event.');
+    } else {
+        modality.setCustomValidity('');
+    }
+
+    if (modality.value === 'in-person') {
+        const locationValue = locationInput.value.trim();
+        if (!locationValue) {
+            locationInput.setCustomValidity('Provide a location for in-person events.');
+        } else {
+            locationInput.setCustomValidity('');
+        }
+    }
+
+    if (modality.value === 'remote') {
+        const remoteValue = remoteUrlInput.value.trim();
+        if (!remoteValue) {
+            remoteUrlInput.setCustomValidity('Provide the meeting link for remote events.');
+        } else if (!/^https?:\/\/.+/i.test(remoteValue)) {
+            remoteUrlInput.setCustomValidity('Enter a valid URL that starts with http or https.');
+        } else {
+            remoteUrlInput.setCustomValidity('');
+        }
+    }
+
+    const isValid = eventForm.checkValidity();
+    if (!isValid) {
+        eventForm.reportValidity();
+    }
+    return isValid;
 }
 
 function saveEvent(){
     const eventDetails = {
-        name: eventName.value,
+        name: eventName.value.trim(),
         weekday: weekday.value,
         time: time.value,
         category: category.value,
         modality: modality.value,
-        location: modality.value === 'in-person' ? locationInput.value : null,
-        url: modality.value === 'remote' ? remoteUrlInput.value : null,
-        attendees: attendeesInput.value
+        location: modality.value === 'in-person' ? locationInput.value.trim() : null,
+        url: modality.value === 'remote' ? remoteUrlInput.value.trim() : null,
+        attendees: attendeesInput.value.trim()
     };
     if (currentCard) {
         console.log('Editing existing event:', eventDetails);
@@ -80,7 +161,7 @@ function editEventCard(card, eventDetails) {
     const newDayColumn = document.getElementById(eventDetails.weekday.toLowerCase());
     if (!newDayColumn) {
         console.error('Invalid weekday when editing event:', eventDetails.weekday);
-        currentEditingCard = null;
+        currentCard = null;
         return;
     }
     const currentParent = card.parentElement;
@@ -93,7 +174,7 @@ function editEventCard(card, eventDetails) {
         newDayColumn.appendChild(updatedCard);
     }
     
-    currentEditingCard = null;
+    currentCard = null;
     console.log('Editing event:', eventDetails);
 }
 
@@ -155,6 +236,34 @@ function resetEventForm() {
 
 if (eventModal) {
     eventModal.addEventListener('hidden.bs.modal', resetEventForm);
+}
+
+if (eventForm) {
+    eventForm.addEventListener('submit', (evt) => {
+        evt.preventDefault();
+        if (!validateEventForm()) {
+            return;
+        }
+        saveEvent();
+    });
+}
+
+[eventName, locationInput, remoteUrlInput, attendeesInput].forEach((input) => {
+    if (!input) {
+        return;
+    }
+    input.addEventListener('input', () => input.setCustomValidity(''));
+});
+
+[weekday, category, modality].forEach((select) => {
+    if (!select) {
+        return;
+    }
+    select.addEventListener('change', () => select.setCustomValidity(''));
+});
+
+if (modality) {
+    modality.addEventListener('change', updateLocationOptions);
 }
 
 function addEventToCalendarUI(eventInfo) {
