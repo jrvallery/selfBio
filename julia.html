@@ -59,6 +59,7 @@
         background: radial-gradient(circle, rgba(244, 91, 138, 0.35), transparent 65%);
         filter: blur(2px);
         animation: drift 12s ease-in-out infinite;
+        pointer-events: none;
       }
 
       .sparkle.one {
@@ -89,66 +90,50 @@
       .lead {
         font-size: clamp(1.1rem, 2.4vw, 1.4rem);
         line-height: 1.6;
-        max-width: 52ch;
-        margin: 0 0 28px;
+        max-width: 40ch;
+        margin: 0 0 20px;
       }
 
-      .note {
-        display: inline-flex;
+      .centerpiece {
+        display: flex;
+        justify-content: center;
         align-items: center;
-        gap: 10px;
-        padding: 12px 18px;
-        border-radius: 999px;
-        background: linear-gradient(120deg, rgba(244, 91, 138, 0.18), rgba(255, 143, 190, 0.24));
-        font-weight: 600;
-        margin-bottom: 24px;
+        gap: 18px;
+        margin: 6px 0 22px;
       }
 
-      .note span {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--rose);
-        box-shadow: 0 0 10px rgba(244, 91, 138, 0.6);
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
-      .cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 16px;
-        margin: 0 0 32px;
+      .icon .emoji {
+        font-size: 3.4rem;
+        line-height: 1;
       }
 
-      .card {
-        background: var(--paper);
-        border-radius: 18px;
-        padding: 18px;
-        border: 1px solid rgba(27, 27, 36, 0.08);
-        box-shadow: 0 10px 20px rgba(27, 27, 36, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      .icon.heart {
+        animation: pulse 2.6s ease-in-out infinite;
       }
 
-      .card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 16px 30px rgba(27, 27, 36, 0.12);
+      .icon.cat {
+        animation: float 3.2s ease-in-out infinite;
       }
 
-      .card h2 {
-        font-size: 1.05rem;
-        margin: 0 0 8px;
+      .icon.heart .emoji {
+        font-size: 3.8rem;
       }
 
-      .card p {
-        margin: 0;
-        font-size: 0.95rem;
-        color: rgba(27, 27, 36, 0.7);
-        line-height: 1.4;
+      .icon.cat .emoji {
+        font-size: 3.2rem;
       }
 
       .actions {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
+        justify-content: center;
       }
 
       .button {
@@ -178,10 +163,10 @@
         transform: translateY(-2px);
       }
 
-      .footer {
-        margin-top: 28px;
-        font-size: 0.9rem;
-        color: rgba(27, 27, 36, 0.6);
+      .message {
+        margin-top: 16px;
+        font-size: 0.95rem;
+        color: rgba(27, 27, 36, 0.7);
       }
 
       @keyframes drift {
@@ -196,13 +181,57 @@
         }
       }
 
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1.02);
+        }
+        50% {
+          transform: scale(1.12);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) scale(0.92);
+        }
+        50% {
+          transform: translateY(-6px) scale(1.02);
+        }
+      }
+
       @media (max-width: 600px) {
         body {
-          padding: 32px 16px;
+          padding: 24px 14px;
         }
 
         main {
-          padding: 36px 22px;
+          padding: 28px 18px;
+          border-radius: 22px;
+        }
+
+        h1,
+        .lead,
+        .message {
+          text-align: center;
+        }
+
+        .centerpiece {
+          margin: 4px 0 18px;
+          gap: 12px;
+        }
+
+        .icon .emoji {
+          font-size: 3.8rem;
+        }
+
+        .icon.heart .emoji {
+          font-size: 4.3rem;
+        }
+
+        .icon.cat .emoji {
+          font-size: 3.6rem;
         }
 
         .actions {
@@ -211,6 +240,8 @@
 
         .button {
           width: 100%;
+          font-size: 1.05rem;
+          padding: 16px 24px;
         }
       }
     </style>
@@ -219,40 +250,24 @@
     <main>
       <div class="sparkle one" aria-hidden="true"></div>
       <div class="sparkle two" aria-hidden="true"></div>
-
-      <p class="eyebrow">A Sweet Question</p>
-      <h1>Julia, will you be my Valentine?</h1>
-      <p class="lead">
-        From coffee runs to late-night laughs, every moment with you feels like a
-        small celebration. I’d love to make February a little brighter with you.
-      </p>
-
-      <div class="note">
-        <span aria-hidden="true"></span>
-        A yes means: smiles, dessert, and your favorite playlist.
+      <div class="centerpiece" aria-hidden="true">
+        <div class="icon heart">
+          <span class="emoji" aria-hidden="true">❤️</span>
+        </div>
+        <div class="icon cat">
+          <span class="emoji" aria-hidden="true">🐱</span>
+        </div>
       </div>
 
-      <section class="cards" aria-label="Valentine highlights">
-        <article class="card">
-          <h2>Plan A</h2>
-          <p>Cozy dinner, candles, and a playlist made just for you.</p>
-        </article>
-        <article class="card">
-          <h2>Plan B</h2>
-          <p>Outdoor walk, stargazing, and the warmest hot chocolate.</p>
-        </article>
-        <article class="card">
-          <h2>Plan C</h2>
-          <p>Your choice, your vibe. I’ll bring the flowers.</p>
-        </article>
-      </section>
+      <h1>Julia, will you be my Valentine?</h1>
+      <p class="lead">Just a simple yes or no, with a whole lot of hope.</p>
 
       <div class="actions">
-        <button class="button primary" type="button">Yes, absolutely</button>
-        <button class="button secondary" type="button">Let’s pick a time</button>
+        <button class="button primary" type="button">Yes</button>
+        <button class="button secondary" type="button">No</button>
       </div>
 
-      <p class="footer">No pressure — just a heartfelt ask.</p>
+      <p class="message">.</p>
     </main>
   </body>
 </html>
