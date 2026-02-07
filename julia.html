@@ -3,12 +3,256 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Julia</title>
+    <title>Julia — Be My Valentine?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Space+Grotesk:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1b1b24;
+        --rose: #f45b8a;
+        --berry: #ff8fbe;
+        --peach: #ffe1d4;
+        --gold: #ffd166;
+        --sky: #9ae6ff;
+        --paper: #fff7f5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(40% 60% at 10% 10%, rgba(255, 209, 102, 0.55), transparent 65%),
+          radial-gradient(45% 55% at 90% 20%, rgba(154, 230, 255, 0.45), transparent 60%),
+          linear-gradient(135deg, #fff7f5 0%, #ffe8f0 45%, #fde2ec 100%);
+        display: grid;
+        place-items: center;
+        padding: 48px 20px;
+      }
+
+      main {
+        width: min(900px, 100%);
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 28px;
+        padding: 48px clamp(24px, 5vw, 56px);
+        box-shadow:
+          0 24px 60px rgba(27, 27, 36, 0.15),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sparkle {
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        background: radial-gradient(circle, rgba(244, 91, 138, 0.35), transparent 65%);
+        filter: blur(2px);
+        animation: drift 12s ease-in-out infinite;
+      }
+
+      .sparkle.one {
+        top: -120px;
+        right: -80px;
+      }
+
+      .sparkle.two {
+        bottom: -140px;
+        left: -60px;
+        animation-delay: -6s;
+      }
+
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.28em;
+        font-size: 0.75rem;
+        color: rgba(27, 27, 36, 0.6);
+        margin: 0 0 12px;
+      }
+
+      h1 {
+        font-family: "Fraunces", "Times New Roman", serif;
+        font-size: clamp(2.8rem, 6vw, 4.6rem);
+        margin: 0 0 16px;
+      }
+
+      .lead {
+        font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+        line-height: 1.6;
+        max-width: 52ch;
+        margin: 0 0 28px;
+      }
+
+      .note {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 18px;
+        border-radius: 999px;
+        background: linear-gradient(120deg, rgba(244, 91, 138, 0.18), rgba(255, 143, 190, 0.24));
+        font-weight: 600;
+        margin-bottom: 24px;
+      }
+
+      .note span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--rose);
+        box-shadow: 0 0 10px rgba(244, 91, 138, 0.6);
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin: 0 0 32px;
+      }
+
+      .card {
+        background: var(--paper);
+        border-radius: 18px;
+        padding: 18px;
+        border: 1px solid rgba(27, 27, 36, 0.08);
+        box-shadow: 0 10px 20px rgba(27, 27, 36, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 30px rgba(27, 27, 36, 0.12);
+      }
+
+      .card h2 {
+        font-size: 1.05rem;
+        margin: 0 0 8px;
+      }
+
+      .card p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: rgba(27, 27, 36, 0.7);
+        line-height: 1.4;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .button {
+        appearance: none;
+        border: none;
+        cursor: pointer;
+        padding: 14px 24px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .button.primary {
+        background: linear-gradient(120deg, var(--rose), var(--berry));
+        color: white;
+        box-shadow: 0 12px 24px rgba(244, 91, 138, 0.35);
+      }
+
+      .button.secondary {
+        background: white;
+        color: var(--ink);
+        border: 1px solid rgba(27, 27, 36, 0.15);
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+      }
+
+      .footer {
+        margin-top: 28px;
+        font-size: 0.9rem;
+        color: rgba(27, 27, 36, 0.6);
+      }
+
+      @keyframes drift {
+        0% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(16px) scale(1.05);
+        }
+        100% {
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 32px 16px;
+        }
+
+        main {
+          padding: 36px 22px;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        .button {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
     <main>
-      <h1>Julia</h1>
-      <p>New page content goes here.</p>
+      <div class="sparkle one" aria-hidden="true"></div>
+      <div class="sparkle two" aria-hidden="true"></div>
+
+      <p class="eyebrow">A Sweet Question</p>
+      <h1>Julia, will you be my Valentine?</h1>
+      <p class="lead">
+        From coffee runs to late-night laughs, every moment with you feels like a
+        small celebration. I’d love to make February a little brighter with you.
+      </p>
+
+      <div class="note">
+        <span aria-hidden="true"></span>
+        A yes means: smiles, dessert, and your favorite playlist.
+      </div>
+
+      <section class="cards" aria-label="Valentine highlights">
+        <article class="card">
+          <h2>Plan A</h2>
+          <p>Cozy dinner, candles, and a playlist made just for you.</p>
+        </article>
+        <article class="card">
+          <h2>Plan B</h2>
+          <p>Outdoor walk, stargazing, and the warmest hot chocolate.</p>
+        </article>
+        <article class="card">
+          <h2>Plan C</h2>
+          <p>Your choice, your vibe. I’ll bring the flowers.</p>
+        </article>
+      </section>
+
+      <div class="actions">
+        <button class="button primary" type="button">Yes, absolutely</button>
+        <button class="button secondary" type="button">Let’s pick a time</button>
+      </div>
+
+      <p class="footer">No pressure — just a heartfelt ask.</p>
     </main>
   </body>
 </html>
