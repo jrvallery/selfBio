@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Julia — Be My Valentine?</title>
+    <title>Julia - I made this for you!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -201,6 +201,31 @@
         }
       }
 
+      .fall-heart {
+        position: fixed;
+        left: var(--x);
+        top: -10vh;
+        font-size: var(--size);
+        pointer-events: none;
+        z-index: 20;
+        animation: fall var(--duration) linear var(--delay) forwards;
+        filter: drop-shadow(0 6px 8px rgba(27, 27, 36, 0.2));
+      }
+
+      @keyframes fall {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--drift), 110vh) rotate(25deg);
+          opacity: 0;
+        }
+      }
+
       @media (max-width: 600px) {
         body {
           padding: 24px 14px;
@@ -263,11 +288,63 @@
       <p class="lead">Just a simple yes or no, with a whole lot of hope.</p>
 
       <div class="actions">
-        <button class="button primary" type="button">Yes</button>
-        <button class="button secondary" type="button">No</button>
+        <button class="button primary" type="button" id="yes-button">Yes</button>
+        <button class="button secondary" type="button" id="no-button">No</button>
       </div>
 
       <p class="message">.</p>
     </main>
+    <script>
+      const discordWebhook =
+        "https://discord.com/api/webhooks/1469737990648631340/m2JsBDGV6GetpRO_1uEuuX_wwZuWZq6nC53OTItOcPCA1_eBZ0TP2P9OgtQqwrDBB_7K";
+
+      document.getElementById("yes-button").addEventListener("click", async () => {
+        const hearts = ["💖", "💘", "💗", "❤️", "💝", "💞", "🐱", "😺"];
+        const count = 80;
+
+        for (let i = 0; i < count; i += 1) {
+          const heart = document.createElement("span");
+          heart.className = "fall-heart";
+          heart.textContent = hearts[i % hearts.length];
+
+          const x = Math.random() * 100;
+          const size = 18 + Math.random() * 18;
+          const duration = 4 + Math.random() * 3;
+          const delay = Math.random() * 1.8;
+          const drift = (Math.random() - 0.5) * 30;
+
+          heart.style.setProperty("--x", `${x}vw`);
+          heart.style.setProperty("--size", `${size}px`);
+          heart.style.setProperty("--duration", `${duration}s`);
+          heart.style.setProperty("--delay", `${delay}s`);
+          heart.style.setProperty("--drift", `${drift}vw`);
+
+          document.body.appendChild(heart);
+          setTimeout(() => heart.remove(), (duration + delay) * 1000 + 400);
+        }
+
+        try {
+          await fetch(discordWebhook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: "She said yes 💖" }),
+          });
+        } catch (error) {
+          console.error("Webhook failed", error);
+        }
+      });
+
+      document.getElementById("no-button").addEventListener("click", async () => {
+        try {
+          await fetch(discordWebhook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: "She said no 😅" }),
+          });
+        } catch (error) {
+          console.error("Webhook failed", error);
+        }
+      });
+    </script>
   </body>
 </html>
